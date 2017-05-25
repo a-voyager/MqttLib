@@ -7,4 +7,6 @@ public interface Constants {
 
     boolean DEBUG = true;
 
+    String TOPIC = "mqtt/topic";
+    int QOS = 2;
 }

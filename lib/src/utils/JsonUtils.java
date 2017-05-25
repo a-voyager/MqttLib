@@ -11,12 +11,12 @@ import exception.JsonConvertException;
  */
 public class JsonUtils {
 
-    private Gson mGson;
+    private static Gson mGson = new Gson();
 
     private JsonUtils() {
     }
 
-    public String toJson(Object src) {
+    public static String toJson(Object src) {
         return mGson.toJson(src);
     }
 
@@ -27,7 +27,7 @@ public class JsonUtils {
      * @throws JsonConvertException throw when convert error
      */
     @Nullable
-    public <T> T fromJson(String json, Class<T> classOfT) throws JsonConvertException {
+    public static <T> T fromJson(String json, Class<T> classOfT) throws JsonConvertException {
         T result = null;
         try {
             result = mGson.fromJson(json, classOfT);
