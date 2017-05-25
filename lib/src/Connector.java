@@ -23,25 +23,26 @@ public class Connector<T> {
     private String serverURI;
     private String clientId;
     private Class<T> mMessageClassType;
+    private String clientTopic;
 
     private MqttClient mMqttClient;
     private MqttConnectOptions mOptions;
 
 
     private CopyOnWriteArrayList<MessageCallBack<T>> mMessageCallBacks = new CopyOnWriteArrayList<>();
-    private MqttTopic mMqttTopic;
 
 
     private Connector() {
     }
 
-    public static <T> Connector<T> defaultConnector(Class<T> tClass, String clientId) {
+    public static <T> Connector<T> defaultConnector(Class<T> tClass, String clientId, String clientTopic) {
         if (DEFAULT_CONNECTOR == null) {
             synchronized (Connector.class) {
                 if (DEFAULT_CONNECTOR == null) {
                     DEFAULT_CONNECTOR = new Builder<T>()
                             .setMessageClassType(tClass)
                             .setClientId(clientId)
+                            .setClientTopic(clientTopic)
                             .build();
                 }
             }
@@ -86,9 +87,7 @@ public class Connector<T> {
             }
         });
         try {
-            mMqttClient.connect(mOptions);
-            mMqttClient.subscribe(Constants.TOPIC, Constants.QOS);
-            mMqttTopic = mMqttClient.getTopic(Constants.TOPIC);
+            connect();
             Log.d("Connect to " + serverURI + " succeed");
         } catch (MqttException e) {
             Log.d("Connect failed. " + e.getMessage());
@@ -97,14 +96,20 @@ public class Connector<T> {
 
     }
 
+    private void connect() throws MqttException {
+        mMqttClient.connect(mOptions);
+        mMqttClient.subscribe(clientTopic, Constants.QOS);
+    }
+
     public void receiveMessage(MessageCallBack<T> callBack) {
         mMessageCallBacks.add(callBack);
     }
 
-    public void sendMessage(T message) {
+    public void sendMessage(String topic, T message) {
         String s = JsonUtils.toJson(message);
         try {
-            mMqttTopic.publish(s.getBytes(), Constants.QOS, false).waitForCompletion();
+            MqttTopic mqttTopic = mMqttClient.getTopic(topic);
+            mqttTopic.publish(s.getBytes(), Constants.QOS, false).waitForCompletion();
         } catch (MqttException e) {
             Log.d("Send message failed." + e.getMessage());
         }
@@ -114,9 +119,7 @@ public class Connector<T> {
     private void reConnect() {
         if (mMqttClient == null) throw new MqttClientInitException();
         try {
-            mMqttClient.connect(mOptions);
-            mMqttClient.subscribe(Constants.TOPIC, Constants.QOS);
-            mMqttTopic = mMqttClient.getTopic(Constants.TOPIC);
+            connect();
             Log.d("Reconnect succeed.");
         } catch (MqttException e) {
             Log.d("Reconnect failed. " + e.getMessage() + ". retry later");
@@ -139,6 +142,7 @@ public class Connector<T> {
         private String serverURI = "tcp://0.0.0.0:61613";
         private String clientId = "clientId";
         private Class<T> mMessageClassType = null;
+        private String clientTopic = "mqtt/client";
 
         public Builder() {
         }
@@ -178,6 +182,11 @@ public class Connector<T> {
             return this;
         }
 
+        public Builder setClientTopic(String clientTopic) {
+            this.clientTopic = clientTopic;
+            return this;
+        }
+
         private void apply(Connector<T> connector) {
             connector.user = this.user;
             connector.password = this.password;
@@ -186,6 +195,7 @@ public class Connector<T> {
             connector.serverURI = this.serverURI;
             connector.clientId = this.clientId;
             connector.mMessageClassType = this.mMessageClassType;
+            connector.clientTopic = this.clientTopic;
         }
 
         public Connector<T> build() {
