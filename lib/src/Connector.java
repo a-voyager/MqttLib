@@ -30,6 +30,7 @@ public class Connector<T> {
 
 
     private CopyOnWriteArrayList<MessageCallBack<T>> mMessageCallBacks = new CopyOnWriteArrayList<>();
+    private boolean mRetrySendMessage = true;
 
 
     private Connector() {
@@ -93,6 +94,14 @@ public class Connector<T> {
             Log.d("Connect failed. " + e.getMessage());
             reConnect();
         }
+        Looper.prepare(message -> {
+            try {
+                send(message.topic, message.msg);
+            } catch (MqttException e) {
+                MessageQueue.put(new MessageQueue.QMessage(message.topic, message.msg), 2000);
+            }
+        });
+        Looper.loop();
 
     }
 
@@ -107,12 +116,25 @@ public class Connector<T> {
 
     public void sendMessage(String topic, T message) {
         String s = JsonUtils.toJson(message);
+        sendMessage(topic, s);
+    }
+
+    public void sendMessage(String topic, String s) {
         try {
-            MqttTopic mqttTopic = mMqttClient.getTopic(topic);
-            mqttTopic.publish(s.getBytes(), Constants.QOS, false).waitForCompletion();
+            send(topic, s);
         } catch (MqttException e) {
             Log.d("Send message failed." + e.getMessage());
+            if (mRetrySendMessage) {
+                MessageQueue.QMessage qmsg = new MessageQueue.QMessage(topic, s);
+                MessageQueue.put(qmsg);
+                Log.d("Resend " + qmsg);
+            }
         }
+    }
+
+    private void send(String topic, String s) throws MqttException {
+        MqttTopic mqttTopic = mMqttClient.getTopic(topic);
+        mqttTopic.publish(s.getBytes(), Constants.QOS, false).waitForCompletion();
     }
 
 
