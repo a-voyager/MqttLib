@@ -8,8 +8,8 @@ public class Server {
     public static void main(String[] args) {
         Connector<Message> connector = Connector.defaultConnector(Message.class, "server");
 
-
         connector.init();
+
         connector.receiveMessage(new MessageCallBack<Message>() {
             @Override
             public void onNewMessage(Message message) {

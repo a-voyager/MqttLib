@@ -1,5 +1,5 @@
 import callback.MessageCallBack;
-import constant.Constants;
+import constant.Config;
 import exception.MqttClientInitException;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
@@ -113,7 +113,7 @@ public class Connector<T> {
 
     private void connect() throws MqttException {
         mMqttClient.connect(mOptions);
-        mMqttClient.subscribe(clientTopic, Constants.QOS);
+        mMqttClient.subscribe(clientTopic, Config.QOS);
     }
 
     /**
@@ -137,10 +137,10 @@ public class Connector<T> {
     }
 
     /**
-     * Function for send a string message
+     * Function for send a json string message
      *
      * @param topic the topicId of remote client
-     * @param s     the string message you want to send
+     * @param s     the json string message you want to send
      */
     public void sendMessage(String topic, String s) {
         try {
@@ -157,7 +157,7 @@ public class Connector<T> {
 
     private void send(String topic, String s) throws MqttException {
         MqttTopic mqttTopic = mMqttClient.getTopic(topic);
-        mqttTopic.publish(s.getBytes(), Constants.QOS, false).waitForCompletion();
+        mqttTopic.publish(s.getBytes(), Config.QOS, false).waitForCompletion();
     }
 
 

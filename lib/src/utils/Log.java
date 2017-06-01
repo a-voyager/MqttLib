@@ -1,6 +1,6 @@
 package utils;
 
-import constant.Constants;
+import constant.Config;
 
 /**
  * Created by wuhaojie on 17-5-25.
@@ -11,12 +11,12 @@ public class Log {
     }
 
     public static void d(String message) {
-        if (Constants.DEBUG)
+        if (Config.DEBUG)
             System.out.println(message);
     }
 
     public static void e(Exception e) {
-        if (Constants.DEBUG)
+        if (Config.DEBUG)
             e.printStackTrace();
     }
 

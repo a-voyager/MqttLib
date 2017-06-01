@@ -2,9 +2,8 @@
  * Created by wuhaojie on 17-5-25.
  */
 public class Message {
-
-    int id;
-    String text;
+    private int id;
+    private String text;
 
     public Message(int id, String text) {
         this.id = id;
