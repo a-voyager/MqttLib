@@ -14,6 +14,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class Connector<T> {
 
+    /**
+     * Singleton instance
+     */
     private static volatile Connector DEFAULT_CONNECTOR;
 
     private String user;
@@ -36,13 +39,12 @@ public class Connector<T> {
     private Connector() {
     }
 
-    public static <T> Connector<T> defaultConnector(Class<T> tClass, String clientId, String clientTopic) {
+    public static <T> Connector<T> defaultConnector(Class<T> tClass, String clientTopic) {
         if (DEFAULT_CONNECTOR == null) {
             synchronized (Connector.class) {
                 if (DEFAULT_CONNECTOR == null) {
                     DEFAULT_CONNECTOR = new Builder<T>()
                             .setMessageClassType(tClass)
-                            .setClientId(clientId)
                             .setClientTopic(clientTopic)
                             .build();
                 }
@@ -52,6 +54,10 @@ public class Connector<T> {
     }
 
 
+    /**
+     * Connector init function.
+     * Call this before use it, you could call this when your application start.
+     */
     // Couldn't put it in constructor
     public void init() {
         // Mqtt 配置
@@ -110,15 +116,32 @@ public class Connector<T> {
         mMqttClient.subscribe(clientTopic, Constants.QOS);
     }
 
+    /**
+     * A callback for new message arrived.
+     *
+     * @param callBack callback function
+     */
     public void receiveMessage(MessageCallBack<T> callBack) {
         mMessageCallBacks.add(callBack);
     }
 
+    /**
+     * Function for send a instance message.
+     *
+     * @param topic   the topicId of remote client
+     * @param message the message you want to send, must be correct type which you set before
+     */
     public void sendMessage(String topic, T message) {
         String s = JsonUtils.toJson(message);
         sendMessage(topic, s);
     }
 
+    /**
+     * Function for send a string message
+     *
+     * @param topic the topicId of remote client
+     * @param s     the string message you want to send
+     */
     public void sendMessage(String topic, String s) {
         try {
             send(topic, s);
@@ -162,49 +185,49 @@ public class Connector<T> {
         private int connectionTimeout = 10;
         private int keepAliveInterval = 10;
         private String serverURI = "tcp://0.0.0.0:61613";
-        private String clientId = "clientId";
+        private String clientId = "client#" + System.currentTimeMillis();
         private Class<T> mMessageClassType = null;
         private String clientTopic = "mqtt/client";
 
         public Builder() {
         }
 
-        public Builder setUser(String user) {
+        public Builder<T> setUser(String user) {
             this.user = user;
             return this;
         }
 
-        public Builder setPassword(String password) {
+        public Builder<T> setPassword(String password) {
             this.password = password;
             return this;
         }
 
-        public Builder setConnectionTimeout(int connectionTimeout) {
+        public Builder<T> setConnectionTimeout(int connectionTimeout) {
             this.connectionTimeout = connectionTimeout;
             return this;
         }
 
-        public Builder setKeepAliveInterval(int keepAliveInterval) {
+        public Builder<T> setKeepAliveInterval(int keepAliveInterval) {
             this.keepAliveInterval = keepAliveInterval;
             return this;
         }
 
-        public Builder setServerURI(String serverURI) {
+        public Builder<T> setServerURI(String serverURI) {
             this.serverURI = serverURI;
             return this;
         }
 
-        public Builder setClientId(String clientId) {
+        public Builder<T> setClientId(String clientId) {
             this.clientId = clientId;
             return this;
         }
 
-        public Builder setMessageClassType(Class<T> messageClassType) {
+        public Builder<T> setMessageClassType(Class<T> messageClassType) {
             mMessageClassType = messageClassType;
             return this;
         }
 
-        public Builder setClientTopic(String clientTopic) {
+        public Builder<T> setClientTopic(String clientTopic) {
             this.clientTopic = clientTopic;
             return this;
         }

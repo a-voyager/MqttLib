@@ -6,7 +6,7 @@ import callback.MessageCallBack;
 public class Server {
 
     public static void main(String[] args) {
-        Connector<Message> connector = Connector.defaultConnector(Message.class, "*1", "server");
+        Connector<Message> connector = Connector.defaultConnector(Message.class, "server");
 
 
         connector.init();
@@ -17,7 +17,6 @@ public class Server {
                 connector.sendMessage("client", new Message(0, "收到"));
             }
         });
-
 
 
     }

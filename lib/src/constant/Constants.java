@@ -5,7 +5,7 @@ package constant;
  */
 public interface Constants {
 
-    boolean DEBUG = false;
+    boolean DEBUG = true;
 
     int QOS = 2;
 }

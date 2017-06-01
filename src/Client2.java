@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class Client2 {
 
     public static void main(String[] args) {
-        Connector<Message> connector = Connector.defaultConnector(Message.class, "#2", "client");
+        Connector<Message> connector = Connector.defaultConnector(Message.class, "client");
         connector.init();
         connector.receiveMessage(new MessageCallBack<Message>() {
             @Override
