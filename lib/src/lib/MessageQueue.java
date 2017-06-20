@@ -1,5 +1,7 @@
-import exception.MessageQueueException;
-import utils.Log;
+package lib;
+
+import lib.exception.MessageQueueException;
+import lib.utils.Log;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;

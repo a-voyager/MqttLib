@@ -1,10 +1,12 @@
-import callback.MessageCallBack;
-import constant.Config;
-import exception.MqttClientInitException;
+package lib;
+
+import lib.callback.MessageCallBack;
+import lib.constant.Config;
+import lib.exception.MqttClientInitException;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-import utils.JsonUtils;
-import utils.Log;
+import lib.utils.JsonUtils;
+import lib.utils.Log;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -55,7 +57,7 @@ public class Connector<T> {
 
 
     /**
-     * Connector init function.
+     * lib.Connector init function.
      * Call this before use it, you could call this when your application start.
      */
     // Couldn't put it in constructor
@@ -117,9 +119,9 @@ public class Connector<T> {
     }
 
     /**
-     * A callback for new message arrived.
+     * A lib.callback for new message arrived.
      *
-     * @param callBack callback function
+     * @param callBack lib.callback function
      */
     public void receiveMessage(MessageCallBack<T> callBack) {
         mMessageCallBacks.add(callBack);

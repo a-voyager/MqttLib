@@ -1,4 +1,4 @@
-package callback;
+package lib.callback;
 
 /**
  * Interface for new message comes.

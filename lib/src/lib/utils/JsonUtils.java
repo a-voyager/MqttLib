@@ -1,9 +1,9 @@
-package utils;
+package lib.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.sun.istack.internal.Nullable;
-import exception.JsonConvertException;
+import lib.exception.JsonConvertException;
 
 /**
  * Json helper class

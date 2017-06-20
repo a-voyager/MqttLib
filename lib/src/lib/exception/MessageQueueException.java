@@ -1,4 +1,4 @@
-package exception;
+package lib.exception;
 
 /**
  * Created by wuhaojie on 17-5-26.

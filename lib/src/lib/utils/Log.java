@@ -1,6 +1,6 @@
-package utils;
+package lib.utils;
 
-import constant.Config;
+import lib.constant.Config;
 
 /**
  * Created by wuhaojie on 17-5-25.

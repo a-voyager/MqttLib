@@ -1,5 +1,5 @@
-# Connector --MQTT 封装库
-`Connector` 是基于 `MQTT` 协议的客户端/服务端通信库, 主要解决恶劣网络环境通信和数据帧格式的问题, 适用于物联网设备间通信.
+# lib.Connector --MQTT 封装库
+`lib.Connector` 是基于 `MQTT` 协议的客户端/服务端通信库, 主要解决恶劣网络环境通信和数据帧格式的问题, 适用于物联网设备间通信.
 
 [下载 JAR 包][1]
 
@@ -13,11 +13,11 @@
 ## 1. 启动 Apollo
 `Apollo` 作为中间件服务器, 启动后记录 `TCP` 协议地址, 如 tcp://192.168.1.100:61613
 
-## 2. 实例化 Connector
-两种方式均可实例化 `Connector`:
+## 2. 实例化 lib.Connector
+两种方式均可实例化 `lib.Connector`:
 ### a. Builder 模式进行详细配置
 ```java
-    Connector<Message> connector = new Connector.Builder<Message>()
+    lib.Connector<Message> connector = new lib.Connector.Builder<Message>()
             .setServerURI("tcp://0.0.0.0:61613")    // Apollo 服务器地址
             .setClientId("#1")                      // 本地 ID
             .setClientTopic("client")               // 本地 TopicID
@@ -28,7 +28,7 @@
 
 ### b. 使用默认配置
 ```java
-    Connector<Message> connector = Connector.defaultConnector(Message.class, "client"); // 发送消息封装类, 本地 TopicID
+    lib.Connector<Message> connector = lib.Connector.defaultConnector(Message.class, "client"); // 发送消息封装类, 本地 TopicID
 ```
 
 > 说明
@@ -46,13 +46,13 @@
 >     }
 > ```
 
-## 3. 初始化 Connector
+## 3. 初始化 lib.Connector
 在你的应用生命周期起点, 应该调用初始化函数, 以连接 `Apollo` 服务器和一些其它的初始化操作
 ```java
     connector.init();
 ```
 
-## 4. 使用 Connector 发送和接收消息
+## 4. 使用 lib.Connector 发送和接收消息
 ### a. 发送消息
 ```java
     connector.sendMessage("server", new Message(2, "Hello World")); // 指定 TopicID 和 消息实体

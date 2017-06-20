@@ -1,4 +1,4 @@
-package constant;
+package lib.constant;
 
 /**
  * Config class

@@ -1,4 +1,5 @@
-import callback.MessageCallBack;
+import lib.callback.MessageCallBack;
+import lib.Connector;
 
 import java.util.Scanner;
 
